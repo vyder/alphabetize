@@ -2,6 +2,7 @@ require "alphabetize/version"
 
 module Alphabetize
   def alphabetize_file
+    filename = "Gemfile"
     file = File.new(filename)
 
     lines = file.readlines
