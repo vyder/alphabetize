@@ -8,22 +8,48 @@ module Alphabetize
     file = File.new(filename)
 
     lines = file.readlines
-    lineHash = gem_hash(lines)
+    fileGroups = file_hash(lines)
 
     backupFilename = "old_#{filename}"
     %x( mv #{filename} #{backupFilename})
 
     file = File.open(filename, 'w')
-    file.truncate(0) # clear the file
-    lineHash.keys.sort.each do |gem|
-      line = lineHash[gem]
-      file.puts(line)
+    # file.truncate(0) # clear the file
+
+    fileGroups.each do |group|
+      group.keys.sort.each do |gem|
+        line = group[gem]
+        file.puts(line)
+      end
+      file.puts("")
     end
+
     file.close
 
   end
 
   private
+  def self.file_hash(lines)
+    groups = []
+    group_lines = []
+    lines.each do |line|
+      if line == "\n" and !group_lines.empty?
+        group = gem_hash(group_lines)
+        groups << group
+        group_lines = [] # reset group lines
+      else
+        group_lines << line if line != "\n"
+      end
+    end
+
+    if !group_lines.empty?
+      group = gem_hash(group_lines)
+      groups << group
+    end
+
+    groups
+  end
+
   def self.gem_hash(lines)
     hash = {}
 
