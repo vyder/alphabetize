@@ -1,7 +1,5 @@
 $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
 
-require 'alphabetize/version'
-
 # The Gemfile is parsed into    file_chunks array
 # Each chunk has the following attributes:  
 #   :type - :static (don't sort them), :regular, :group (official group, use the header, end correctly)
@@ -10,6 +8,8 @@ require 'alphabetize/version'
 # 
 
 module Alphabetize
+  VERSION = "0.1.0"
+
   def self.alphabetize_file
     filename = "Gemfile"
     file = File.new(filename)

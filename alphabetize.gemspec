@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/alphabetize/version', __FILE__)
+$:.unshift File.dirname(__FILE__)
+
+require 'lib/alphabetize'
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Vidur Murali"]
@@ -14,4 +16,25 @@ Gem::Specification.new do |gem|
   gem.name          = "alphabetize"
   gem.require_paths = ["lib"]
   gem.version       = Alphabetize::VERSION
-end
+
+  # = MANIFEST =
+  gem.files = %w[
+    Gemfile
+    LICENSE
+    README.md
+    Rakefile
+    alphabetize.gemspec
+    bin/alphabetize
+    lib/alphabetize.rb
+    test/helper.rb
+    test/sample_Gemfiles/mixed_Gemfile
+    test/sample_Gemfiles/out_regular_chunks_Gemfile
+    test/sample_Gemfiles/out_static_chunks_Gemfile
+    test/sample_Gemfiles/regular_chunks_Gemfile
+    test/sample_Gemfiles/simple_Gemfile
+    test/sample_Gemfiles/static_chunks_Gemfile
+    test/test_alphabetize.rb
+  ]
+  # = MANIFEST =
+
+end  
