@@ -1,3 +1,3 @@
 module Alphabetize
-  VERSION = "0.0.2"
+  VERSION = "0.1.0"
 end

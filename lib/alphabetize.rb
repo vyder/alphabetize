@@ -58,10 +58,11 @@ module Alphabetize
     chunk = {}
     chunk_gem_lines = []
     lines.each do |line|
-
+      puts "*            Processing line: #{line}"
       if line != "\n"
         if line.match(/##/) # static chunk
           chunk[:type] = :static
+          puts "Thinks its static"
           chunk[:gem_hash] = gem_hash([line])
           chunks << chunk
           chunk = {}
@@ -71,7 +72,8 @@ module Alphabetize
           chunk[:type] = :group
           chunk[:header] = line
 
-        elsif line.match(/end/) # official end of a group
+        elsif line.match(/^end/) # official end of a group
+          puts "Thinks its a group"
           chunk[:gem_hash] = gem_hash(chunk_gem_lines)
           chunks << chunk
           chunk = {}
@@ -83,12 +85,14 @@ module Alphabetize
         end
 
       elsif line == "\n" and chunk != {}  # this is the end of some regular chunk
+        puts "Thinks its regular"
         chunk[:gem_hash] = gem_hash(chunk_gem_lines)
         chunks << chunk
         chunk = {}
         chunk_gem_lines = []
 
       else # two new line characters in a row
+        puts "**** Skipping line: #{line}"
         # do nothing
       end
 
@@ -117,13 +121,14 @@ module Alphabetize
 
   def self.gem_hash(lines)
     hash = {}
-
+    puts "-------- Inspecting lines: #{lines.inspect}"
     lines.each do |line|
+      puts "Line: #{line}"
       match_data = line.scan(/(\"([^"]*)\")|(\'([^']*)\')/)
       # The gem is either the second element or the 4th element of the array
       gem ||= match_data[0][1]
       gem ||= match_data[0].last
-
+      puts "Found gem: #{gem}"
       hash[gem] = line
     end
 
