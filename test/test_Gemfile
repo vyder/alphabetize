@@ -1,9 +1,46 @@
-gem 'fixed-gem', '3.2.1' ## Don't want this to move from line 1
-gem 'bcrypt-ruby',  '3.0.1'
-gem 'jquery-rails', '2.0.2'
+gem 'rails', '3.1.3'
+gem 'pg'
+gem 'jquery-rails'
+gem "zurbfoundation"
+gem 'devise'
+gem 'icalendar'
+gem 'omniauth-facebook'
+gem 'cancan'
+gem 'nested_form', :git => 'https://github.com/jweslley/nested_form.git'
+gem 'datejsrails'
 
-gem 'fixed-gem', '3.2.1' ## Don't want this to move from line 5
-gem 'pg',           '0.13.2'
-gem 'uglifier',     '1.0.3'
-gem 'sass-rails',   '3.2.3'
-gem 'rails',        '3.2.3'
+group :assets do
+  gem 'sass-rails',   '~> 3.1.5'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'uglifier', '>= 1.0.3'
+end
+
+group :development do
+  gem 'kumade', '~> 0.8.1'
+  gem 'letter_opener'
+  gem 'ruby-debug19', :platforms => :ruby_19#, :require => 'ruby-debug'
+end
+
+group :development, :test do
+  gem 'factory_girl_rails'
+  gem 'rspec-rails', '~> 2.7'
+  gem 'shoulda-matchers'
+  gem 'email_spec'
+  gem 'guard-livereload'
+  gem 'yajl-ruby' # speed up LiveReload JSON
+  gem 'rb-notifu', :platforms => :mingw
+  gem 'rb-fchange', :platforms => :mingw
+  gem 'eventmachine', '>= 1.0.0.beta.4', :platforms => :mingw
+end
+
+group :test do
+  gem "capybara", '~> 1.1.2' # for spec/requests
+  gem 'launchy' # for save_and_open_page
+  gem 'spork'
+  gem 'guard-spork'
+  gem 'rb-fsevent'
+  gem 'guard-rspec'
+  gem 'simplecov', '~> 0.5.4'
+  gem 'shoulda', '~> 2.11.3'
+  gem 'factory_girl_rails'
+end

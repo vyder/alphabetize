@@ -1,0 +1,21 @@
+gem 'fixed-gem', '3.2.1' ## Don't want this to move from line 1
+gem 'bcrypt-ruby',  '3.0.1'
+gem 'jquery-rails', '2.0.2'
+
+gem 'fixed-gem', '3.2.1' ## Don't want this to move from line 5
+gem 'pg',           '0.13.2'
+gem 'uglifier',     '1.0.3'
+
+group :development do
+  gem 'private_pub'
+  gem 'sass-rails',   '3.2.3'
+  gem 'rails',        '3.2.3'
+  gem 'js-routes'
+  gem 'rails-erd'
+  gem 'growl'
+end
+
+gem 'shoulda-matchers'
+gem 'spork'
+gem 'faker'
+gem 'simplecov', :require => false
