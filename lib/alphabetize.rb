@@ -2,13 +2,23 @@ $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
 
 require 'alphabetize/version'
 
+# The Gemfile is parsed into    file_chunks array
+# Each chunk has the following attributes:  
+#   :type - :static (don't sort them), :regular, :group (official group, use the header, end correctly)
+#   :header - the line that prepends the chunk
+#   :gem_hash - the hash of gems that belong to this chunk
+# 
+
 module Alphabetize
   def self.alphabetize_file
     filename = "Gemfile"
     file = File.new(filename)
 
     lines = file.readlines
-    fileGroups = file_hash(lines)
+    puts "File Lines: #{lines.inspect}"
+    file_chunks = make_chunky(lines)
+
+    puts "Chunks: #{file_chunks.inspect}"
 
     backupFilename = "old_#{filename}"
     %x( mv #{filename} #{backupFilename})
@@ -16,11 +26,24 @@ module Alphabetize
     file = File.open(filename, 'w')
     # file.truncate(0) # clear the file
 
-    fileGroups.each do |group|
-      group.keys.sort.each do |gem|
-        line = group[gem]
-        file.puts(line)
+    file_chunks.each do |chunk|
+      if chunk[:type] == :static
+        print_gem_hash(file, chunk[:gem_hash])
+      elsif chunk[:type] == :group
+        file.puts(chunk[:header])
+        print_gem_hash(file, chunk[:gem_hash])
+        file.puts("end")
+      elsif chunk[:type] == :regular
+        print_gem_hash(file, chunk[:gem_hash])
+      else
+        raise "This chunk has some wierd type!"
       end
+
+
+      # chunk.keys.sort.each do |gem|
+      #   line = chunk[gem]
+      #   file.puts(line)
+      # end
       file.puts("")
     end
 
@@ -29,25 +52,67 @@ module Alphabetize
   end
 
   private
-  def self.file_hash(lines)
-    groups = []
-    group_lines = []
+  def self.make_chunky(lines)
+    chunks = []
+
+    chunk = {}
+    chunk_gem_lines = []
     lines.each do |line|
-      if line == "\n" and !group_lines.empty?
-        group = gem_hash(group_lines)
-        groups << group
-        group_lines = [] # reset group lines
-      else
-        group_lines << line if line != "\n"
+
+      if line != "\n"
+        if line.match(/##/) # static chunk
+          chunk[:type] = :static
+          chunk[:gem_hash] = gem_hash([line])
+          chunks << chunk
+          chunk = {}
+          chunk_gem_lines = []
+
+        elsif line.match(/do/) # official start of a group
+          chunk[:type] = :group
+          chunk[:header] = line
+
+        elsif line.match(/end/) # official end of a group
+          chunk[:gem_hash] = gem_hash(chunk_gem_lines)
+          chunks << chunk
+          chunk = {}
+          chunk_gem_lines = []
+
+        else # regular gem line
+          chunk[:type] = :regular if chunk == {} # start of a regualr chunk
+          chunk_gem_lines << line
+        end
+
+      elsif line == "\n" and chunk != {}  # this is the end of some regular chunk
+        chunk[:gem_hash] = gem_hash(chunk_gem_lines)
+        chunks << chunk
+        chunk = {}
+        chunk_gem_lines = []
+
+      else # two new line characters in a row
+        # do nothing
       end
+
+
+      # if line contains '##'
+      #   mark chunk as :static
+      # if line contains 'do'
+      #   mark chunk as :group
+      # 
+      # if line == "\n" and !chunk_gem_lines.empty?
+      #   chunk[:gem_hash] = gem_hash(chunk_gem_lines)
+      #   chunks << chunk
+      #   chunk_gem_lines = [] # reset chunk lines
+      # else
+      #   chunk_gem_lines << line if line != "\n"
+      # end
     end
 
-    if !group_lines.empty?
-      group = gem_hash(group_lines)
-      groups << group
+    if chunk != {}
+      chunk[:gem_hash] = gem_hash(chunk_gem_lines)
+      chunks << chunk
     end
 
-    groups
+    chunks
   end
 
   def self.gem_hash(lines)
@@ -63,5 +128,12 @@ module Alphabetize
     end
 
     hash
+  end
+
+  def self.print_gem_hash(out, hash)
+    hash.keys.sort.each do |gem|
+      line = hash[gem]
+      out.puts(line)
+    end
   end
 end
