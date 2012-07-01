@@ -1,7 +1,9 @@
-require "alphabetize/version"
+$:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
+
+require 'alphabetize/version'
 
 module Alphabetize
-  def alphabetize_file
+  def self.alphabetize_file
     filename = "Gemfile"
     file = File.new(filename)
 
@@ -21,7 +23,8 @@ module Alphabetize
 
   end
 
-  def gem_hash(lines)
+  private
+  def self.gem_hash(lines)
     hash = {}
 
     lines.each do |line|
