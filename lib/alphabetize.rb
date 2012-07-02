@@ -8,7 +8,7 @@ $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
 # 
 
 module Alphabetize
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   def self.alphabetize_file
     filename = "Gemfile"
