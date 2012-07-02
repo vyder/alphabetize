@@ -1,6 +1,6 @@
 # Alphabetize
 
-TODO: Write a gem description
+Ruby gem to soothe your OCDs by alphabetizing your Gemfile
 
 ## Installation
 
@@ -18,7 +18,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Go to root level of your rails app and run
+
+	$ alphabetize
 
 ## Contributing
 
