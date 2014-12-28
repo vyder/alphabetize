@@ -1,5 +1,6 @@
 #!/usr/bin/env rake
 require "bundler/gem_tasks"
+require 'rake/testtask'
 
 # Most of these rake tasks were obtained from jekyll's Rakefile: #src TODO
 
@@ -46,6 +47,11 @@ end
 # Packaging tasks
 #
 #############################################################################
+
+
+Rake::TestTask.new do |t|
+  t.libs << 'test'
+end
 
 task :release => :build do
   unless `git branch` =~ /^\* master$/

@@ -8,17 +8,21 @@ $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
 # 
 
 module Alphabetize
-  VERSION = "0.1.2"
+  VERSION = "0.1.3"
 
-  def self.alphabetize_file
+  def self.alphabetize_file(options = {})
+
+    @@options = options
+    @@options[:mode] ||= :verbose
+
     filename = "Gemfile"
     file = File.new(filename)
 
     lines = file.readlines
-    puts "File Lines: #{lines.inspect}"
+    puts "File Lines: #{lines.inspect}" if @@options[:mode] == :verbose
     file_chunks = make_chunky(lines)
 
-    puts "Chunks: #{file_chunks.inspect}"
+    puts "Chunks: #{file_chunks.inspect}" if @@options[:mode] == :verbose
 
     backupFilename = "old_#{filename}"
     %x( mv #{filename} #{backupFilename})
@@ -58,11 +62,11 @@ module Alphabetize
     chunk = {}
     chunk_gem_lines = []
     lines.each do |line|
-      puts "*            Processing line: #{line}"
+      puts "*            Processing line: #{line}" if @@options[:mode] == :verbose
       if line != "\n"
         if line.match(/##/) # static chunk
           chunk[:type] = :static
-          puts "Thinks its static"
+          puts "Thinks its static" if @@options[:mode] == :verbose
           chunk[:gem_hash] = gem_hash([line])
           chunks << chunk
           chunk = {}
@@ -73,7 +77,7 @@ module Alphabetize
           chunk[:header] = line
 
         elsif line.match(/^end/) # official end of a group
-          puts "Thinks its a group"
+          puts "Thinks its a group" if @@options[:mode] == :verbose
           chunk[:gem_hash] = gem_hash(chunk_gem_lines)
           chunks << chunk
           chunk = {}
@@ -85,14 +89,14 @@ module Alphabetize
         end
 
       elsif line == "\n" and chunk != {}  # this is the end of some regular chunk
-        puts "Thinks its regular"
+        puts "Thinks its regular" if @@options[:mode] == :verbose
         chunk[:gem_hash] = gem_hash(chunk_gem_lines)
         chunks << chunk
         chunk = {}
         chunk_gem_lines = []
 
       else # two new line characters in a row
-        puts "**** Skipping line: #{line}"
+        puts "**** Skipping line: #{line}" if @@options[:mode] == :verbose
         # do nothing
       end
 
@@ -121,14 +125,14 @@ module Alphabetize
 
   def self.gem_hash(lines)
     hash = {}
-    puts "-------- Inspecting lines: #{lines.inspect}"
+    puts "-------- Inspecting lines: #{lines.inspect}" if @@options[:mode] == :verbose
     lines.each do |line|
-      puts "Line: #{line}"
+      puts "Line: #{line}" if @@options[:mode] == :verbose
       match_data = line.scan(/(\"([^"]*)\")|(\'([^']*)\')/)
       # The gem is either the second element or the 4th element of the array
       gem ||= match_data[0][1]
       gem ||= match_data[0].last
-      puts "Found gem: #{gem}"
+      puts "Found gem: #{gem}" if @@options[:mode] == :verbose
       hash[gem] = line
     end
 

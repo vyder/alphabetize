@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
 require 'alphabetize'
-puts Alphabetize.alphabetize_file()
+puts Alphabetize.alphabetize_file

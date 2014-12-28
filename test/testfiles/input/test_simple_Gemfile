@@ -1,0 +1,10 @@
+gem 'fixed-gem', '3.2.1'
+gem 'bcrypt-ruby',  '3.0.1'
+gem 'jquery-rails', '2.0.2'
+gem 'fixed-gem', '3.2.1'
+gem 'pg',           '0.13.2'
+gem 'uglifier',     '1.0.3'
+gem 'shoulda-matchers'
+gem 'spork'
+gem 'faker'
+gem 'simplecov', :require => false
